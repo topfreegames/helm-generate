@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    fluxcd.io/ignore: "true"
+    fluxcd.io/ignore: sync_only
   labels:
     name: ns
   name: ns

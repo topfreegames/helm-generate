@@ -22,7 +22,7 @@ func TestCreateNamespace(t *testing.T) {
 		"apiVersion": "v1",
 		"kind":       "Namespace",
 		"metadata": map[interface{}]interface{}{
-			"annotations": map[interface{}]interface{}{"fluxcd.io/ignore": "true"},
+			"annotations": map[interface{}]interface{}{"fluxcd.io/ignore": "sync_only"},
 			"labels":      map[interface{}]interface{}{"name": "nsDefaultLabel"},
 			"name":        "nsDefaultLabel",
 		},
@@ -31,7 +31,7 @@ func TestCreateNamespace(t *testing.T) {
 		"apiVersion": "v1",
 		"kind":       "Namespace",
 		"metadata": map[interface{}]interface{}{
-			"annotations": map[interface{}]interface{}{"fluxcd.io/ignore": "true"},
+			"annotations": map[interface{}]interface{}{"fluxcd.io/ignore": "sync_only"},
 			"labels":      map[interface{}]interface{}{"name": "nsMultipleLabels", "anotherLabel": "coolValue"},
 			"name":        "nsMultipleLabels",
 		},
@@ -40,7 +40,7 @@ func TestCreateNamespace(t *testing.T) {
 		"apiVersion": "v1",
 		"kind":       "Namespace",
 		"metadata": map[interface{}]interface{}{
-			"annotations": map[interface{}]interface{}{"fluxcd.io/ignore": "true", "dopeannotation": "nah"},
+			"annotations": map[interface{}]interface{}{"fluxcd.io/ignore": "sync_only", "dopeannotation": "nah"},
 			"labels":      map[interface{}]interface{}{"name": "nsMultipleAnnotations"},
 			"name":        "nsMultipleAnnotations",
 		},
