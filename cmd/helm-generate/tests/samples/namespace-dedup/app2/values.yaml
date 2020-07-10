@@ -1,0 +1,6 @@
+releaseName: app2
+namespace: ns
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent

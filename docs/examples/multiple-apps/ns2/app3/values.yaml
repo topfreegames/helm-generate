@@ -1,0 +1,10 @@
+releaseName: app3
+namespace: ns2
+replicaCount: 10
+
+nameOverride: "redis"
+
+service:
+  type: LoadBalancer
+  port: 5000
+  

@@ -1,0 +1,13 @@
+releaseName: app1
+namespace: ns1
+replicaCount: 1
+
+image:
+  repository: my-custom-image
+
+nameOverride: "web-application"
+fullnameOverride: "my-awesome-web-application"
+
+service:
+  type: ClusterIP
+  port: 3000

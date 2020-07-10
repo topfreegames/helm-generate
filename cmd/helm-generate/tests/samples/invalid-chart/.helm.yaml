@@ -1,0 +1,2 @@
+chart: ./tests/nonexistent-chart
+chartVersion: 1.0.0

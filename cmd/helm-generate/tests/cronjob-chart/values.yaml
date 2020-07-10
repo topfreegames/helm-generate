@@ -1,0 +1,89 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+jobs:
+  # first cron
+  - name: hello-world
+    image:
+      repository: hello-world
+      tag: latest
+      imagePullPolicy: IfNotPresent
+    schedule: "* * * * *"
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Allow
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 2000
+    restartPolicy: OnFailure
+  # second cron
+  - name: hello-ubuntu
+    image:
+      repository: ubuntu
+      tag: latest
+      imagePullPolicy: Always
+    schedule: "*/5 * * * *"
+    command: ["/bin/bash"]
+    args:
+      - "-c"
+      - "echo $(date) - hello from ubuntu"
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 2000
+    resources:
+      limits:
+        cpu: 50m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Forbid
+    restartPolicy: OnFailure
+  # third cron
+  - name: hello-env-var
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 2000
+    image:
+      repository: busybox
+      tag: latest
+      imagePullPolicy: Always
+    # optional env vars
+    env:
+    - name: ECHO_VAR
+      value: "busybox"
+    schedule: "* * * * *"
+    command: ["/bin/sh"]
+    args:
+      - "-c"
+      - "echo $(date) - hello from $ECHO_VAR"
+    resources:
+      limits:
+        cpu: 50m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Forbid
+    restartPolicy: Never
+    nodeSelector:
+      type: infra
+    tolerations:
+    - effect: NoSchedule
+      operator: Exists
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/e2e-az-name
+              operator: In
+              values:
+              - e2e-az1
+              - e2e-az2

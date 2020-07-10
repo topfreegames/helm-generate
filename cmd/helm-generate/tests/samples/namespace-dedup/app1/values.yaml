@@ -1,0 +1,11 @@
+releaseName: app1
+namespace: ns
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80

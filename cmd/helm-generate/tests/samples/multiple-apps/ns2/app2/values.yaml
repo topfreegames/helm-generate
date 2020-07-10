@@ -1,0 +1,4 @@
+releaseName: app2
+namespace: ns2
+
+nameOverride: "api-application"

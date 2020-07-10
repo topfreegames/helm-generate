@@ -1,0 +1,13 @@
+# Variables related to silent mode / `make -s`.
+
+# SILENT contains an 's' if make is in silent mode (`make -s`), otherwise it's
+# empty.
+SILENT ?= $(findstring s,$(MAKEFLAGS))
+
+# SILENT_CMD_SUFFIX can be added to most noisy commands commands to make them
+# respect silent mode.
+ifeq (s,$(SILENT))
+SILENT_CMD_SUFFIX ?= 2>/dev/null 1>&2
+else
+SILENT_CMD_SUFFIX ?=
+endif

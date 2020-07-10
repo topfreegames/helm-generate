@@ -1,0 +1,18 @@
+# Git related targets.
+
+include Makefile.silent
+
+GIT ?= git
+GITDIFF ?= $(GIT) diff
+
+.PHONY: git/diff
+git/diff:
+ifeq (,$(SILENT))
+	@if ! $(GITDIFF) --quiet; then \
+		printf 'Found changes on local workspace. ' ; \
+		printf 'Please run `make fix` and commit the changes.\n' ; \
+		exit 1; \
+	fi
+else
+	$(GITDIFF) --quiet
+endif
