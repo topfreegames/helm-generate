@@ -1,5 +1,8 @@
-# helm-generate :
+# helm-generate
 Recursively generates Kubernetes manifests from a folder using Helm. This project began as a [generator command](https://docs.fluxcd.io/en/1.20.0/references/fluxyaml-config-files/) for using with Flux.
+
+## Docker
+Available at: [Docker Hub](https://hub.docker.com/r/tfgco/helm-generate) and [Quay.io](https://quay.io/repository/tfgco/helm-generate).
 
 ## Requirements
 
