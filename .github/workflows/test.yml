@@ -28,6 +28,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 <<<<<<< HEAD
+<<<<<<< HEAD
     - name: Go-CI Setup
       uses: rkoCyrus/Go-CI@1.01
     - name: Fix vendor
@@ -39,3 +40,9 @@ jobs:
       uses: rkoCyrus/Go-CI@1.01
       run: make test
 >>>>>>> 36687a4... Adding Ci
+=======
+    - name: Go-CI Setup
+      uses: rkoCyrus/Go-CI@1.01
+    - name: test
+      run: make test
+>>>>>>> 6daee49... Fixing Github actions
