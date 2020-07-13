@@ -31,8 +31,8 @@ func CreateNamespace(ns string, annotations map[string]string, labels map[string
 	if labels == nil {
 		labels = make(map[string]string)
 	}
-	if annotations["fluxcd.io/sync_only"] == "" {
-		annotations["fluxcd.io/sync_only"] = "true"
+	if annotations["fluxcd.io/ignore"] == "" {
+		annotations["fluxcd.io/ignore"] = "sync_only"
 	}
 	labels["name"] = ns
 	namespace, _ := yaml.Marshal(&Namespace{
