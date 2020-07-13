@@ -151,11 +151,10 @@ func (h *Configuration) InstallChart(vals chartutil.Values) ([]map[string]interf
 	// provided as a parameter to kubectl.
 	// Helm templates also don't generate the namespace
 	// So we're going to add a Namespace manifest
-	// nsManifest := []map[string]interface{}{util.CreateNamespace(namespace, nil, nil)}
+	nsManifest := []map[string]interface{}{util.CreateNamespace(namespace, nil, nil)}
 	manifest, err = addNamespaceMetadata(manifest, namespace)
 	if err != nil {
 		return nil, err
 	}
-	return manifest, nil
-	// return append(nsManifest, manifest...), nil
+	return append(nsManifest, manifest...), nil
 }
