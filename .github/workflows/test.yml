@@ -14,10 +14,7 @@ jobs:
       uses: golangci/golangci-lint-action@v1
       with:
         version: v1.26
-<<<<<<< HEAD
         args: --timeout=5m
-=======
->>>>>>> 36687a4... Adding Ci
   test:
     runs-on: ubuntu-latest
     steps:
@@ -27,22 +24,9 @@ jobs:
         go-version: 1.14.x
     - name: Checkout code
       uses: actions/checkout@v2
-<<<<<<< HEAD
-<<<<<<< HEAD
     - name: Go-CI Setup
       uses: rkoCyrus/Go-CI@1.01
     - name: Fix vendor
       run: go mod vendor
     - name: test
       run: make test
-=======
-    - name: Test
-      uses: rkoCyrus/Go-CI@1.01
-      run: make test
->>>>>>> 36687a4... Adding Ci
-=======
-    - name: Go-CI Setup
-      uses: rkoCyrus/Go-CI@1.01
-    - name: test
-      run: make test
->>>>>>> 6daee49... Fixing Github actions
