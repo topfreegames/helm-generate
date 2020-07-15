@@ -10,8 +10,8 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"git.topfreegames.com/sre/helm-generate/pkg/helm"
-	"git.topfreegames.com/sre/helm-generate/pkg/util"
+	"github.com/topfreegames/helm-generate/pkg/helm"
+	"github.com/topfreegames/helm-generate/pkg/util"
 
 	"helm.sh/helm/v3/pkg/chartutil"
 )
