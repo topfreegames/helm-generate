@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"git.topfreegames.com/sre/helm-generate/pkg/util"
+	"github.com/topfreegames/helm-generate/pkg/util"
 
 	"gopkg.in/yaml.v2"
 

@@ -13,7 +13,7 @@ COMMIT := $(shell git describe --always --long --dirty --tags)
 VERSION := $(shell [ ! -z "${TAG}" ] && echo "${TAG}" || echo "${COMMIT}")
 REVISION := $(shell git rev-parse HEAD)
 SHELL := /bin/sh
-GITREMOTE := "https://git.topfreegames.com/sre/helm-generate"
+GITREMOTE := "https://github.com/topfreegames/helm-generate"
 
 GOLANGCI_LINT := golangci-lint
 

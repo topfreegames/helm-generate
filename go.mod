@@ -1,4 +1,4 @@
-module git.topfreegames.com/sre/helm-generate
+module github.com/topfreegames/helm-generate
 
 go 1.14
 
