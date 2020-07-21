@@ -70,16 +70,21 @@ func TestInstallChartWithArgs(t *testing.T) {
 		}
 		expectedPath := test.Expected.(string) + "/output.yaml"
 		expectedOutput, err := ioutil.ReadFile(expectedPath)
-		if err != nil {
+
+		shouldFail := false
+		if os.IsNotExist(err) {
+			shouldFail = true
+		} else if err != nil {
 			t.Logf("%v", err)
 			t.Fail()
 		}
 
-		if len(expectedOutput) == 0 {
+		if shouldFail {
 			assert.Error(t, testError, "should return error if output is empty")
+		} else {
+			assert.Equal(t, expectedOutput, cmdOutput, "generated manifests should be the same as the expected output. Error: '%s'", testError)
 		}
 
-		assert.Equal(t, expectedOutput, cmdOutput, "generated manifests should be the same as the expected output. Error: '%s'", testError)
 	}
 }
 
@@ -167,5 +172,39 @@ func TestInstallNonExistentPath(t *testing.T) {
 		b, err := helmGenerate(mockCmd, []string{sampleDir})
 		assert.Error(t, err, "should have returned an error for a non-existent path")
 		assert.Equal(t, test.Expected.(bytes.Buffer), b, "Invalid dir should generate an empty output")
+	}
+}
+
+func TestInstallEmptyPath(t *testing.T) {
+	sampleDir := "tests/samples/empty-dir"
+	var tests []TestCase
+	test := TestCase{
+		Name:     "Testing invalid symlink directory",
+		Sample:   sampleDir,
+		Expected: bytes.Buffer{},
+	}
+	tests = append(tests, test)
+
+	for i, test := range tests {
+		t.Logf("Test case %d: %s", i, test.Name)
+		var mockCmd = &cobra.Command{
+			Use:   "helm-generate [root-path]",
+			Short: "templates helm charts and prints it to stdout",
+			Long:  ``,
+			Args:  cobra.RangeArgs(0, 1),
+			Run: func(cmd *cobra.Command, args []string) {
+				//nolint:errcheck
+				helmGenerate(cmd, args)
+			},
+		}
+		mockCmd.PersistentFlags().String(flagDefaultChart, "tests/chart", "")
+		mockCmd.PersistentFlags().String(flagDefaultChartVersion, "1.0.0", "")
+		mockCmd.Flags().String(flagHelmYamlFilename, ".helm.yaml", "")
+		mockCmd.Flags().StringP(flagHelmValuesFilename, "f", "values.yaml", "")
+		mockCmd.Flags().StringP(flagPostRenderBinary, "p", "", "")
+
+		b, err := helmGenerate(mockCmd, []string{sampleDir})
+		assert.NoError(t, err, "should not have returned an error for an empty path")
+		assert.Equal(t, test.Expected.(bytes.Buffer), b, "Empty dir should generate an empty output")
 	}
 }
