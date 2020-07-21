@@ -179,7 +179,7 @@ func TestInstallEmptyPath(t *testing.T) {
 	sampleDir := "tests/samples/empty-dir"
 	var tests []TestCase
 	test := TestCase{
-		Name:     "Testing invalid symlink directory",
+		Name:     "Testing empty directory",
 		Sample:   sampleDir,
 		Expected: bytes.Buffer{},
 	}
