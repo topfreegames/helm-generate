@@ -25,7 +25,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Go-CI Setup
-      uses: rkoCyrus/Go-CI@1.01
+      uses: rkoCyrus/Go-CI@1.4.0
     - name: Fix vendor
       run: go mod vendor
     - name: test
