@@ -1,6 +1,7 @@
 {{- $chart_name := .Chart.Name }}
 {{- $chart_version := .Chart.Version | replace "+" "_" }}
 {{- $release_name := .Release.Name }}
+{{- $cluster_name := .Values.cluster }}
 
 {{- range $job := .Values.jobs }}
 ---
@@ -37,6 +38,8 @@ spec:
             name: {{ $job.name }}
             {{- with $job.env }}
             env:
+            - name: CLUSTER
+              value: {{ $cluster_name }}
 {{ toYaml . | indent 12 }}
             {{- end }}
             {{- if $job.command }}

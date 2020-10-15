@@ -25,6 +25,8 @@ Helm-generate also handles the namespace injection on the manifests, as `helm te
 
 There are two required keys on `values.yaml`: namespace and releaseName. Those are internally used by helm-generate to correctly render the desired charts.
 
+It is possible to inject `(key -> value)` pairs to the top level of the values map through the CLI, using the flag `--set my_key=my_value`. This flag is parsed as `[]string`, therefore it can be passed multiple times to inject multiple pairs. This flag overrides the values from `values.yaml`.
+
 ## .helm.yaml
 This is a special control file designed to change the behavior of helm-generate for a specific folder, this don't apply to any subfolders.
 The current keys available at .helm.yaml are:

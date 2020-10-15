@@ -31,11 +31,12 @@ type Configurator interface {
 
 // Configuration defines a struct for the .helm.yaml file
 type Configuration struct {
-	Chart            string `yaml:"chart"`
-	ChartVersion     string `yaml:"chartVersion"`
-	HelmYaml         string
-	ValuesYaml       string
-	PostRenderBinary string `yaml:"postRenderBinary"`
+	Chart               string `yaml:"chart"`
+	ChartVersion        string `yaml:"chartVersion"`
+	HelmYaml            string
+	ValuesYaml          string
+	PostRenderBinary    string `yaml:"postRenderBinary"`
+	KeyValueAssignments map[string]string
 }
 
 func addNamespaceMetadata(manifests []map[string]interface{}, namespace string) ([]map[string]interface{}, error) {

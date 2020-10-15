@@ -2,11 +2,14 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"gopkg.in/yaml.v2"
 
@@ -28,6 +31,9 @@ func getManifestsForPath(fullFilePath string, h *helm.Configuration) ([]map[stri
 		vals, err := chartutil.ReadValuesFile(fullFilePath)
 		if err != nil {
 			return manifests, fmt.Errorf("Read Values: %v", err)
+		}
+		for k, v := range h.KeyValueAssignments {
+			vals[k] = v
 		}
 		manifests, err = h.InstallChart(vals)
 		if err != nil {
@@ -53,17 +59,29 @@ func helmGenerate(cmd *cobra.Command, args []string) (bytes.Buffer, error) {
 		rootPath = "."
 	}
 
+	var keyValueAssignmentMap map[string]string
+	if flag := cmd.Flag(flagSetKeyValue); flag != nil {
+		if sliceValue, ok := flag.Value.(pflag.SliceValue); ok && sliceValue != nil {
+			m, err := parseKeyValueAssignments(sliceValue.GetSlice())
+			if err != nil {
+				return bytes.Buffer{}, fmt.Errorf("error parsing key-value assignments: %w", err)
+			}
+			keyValueAssignmentMap = m
+		}
+	}
+
 	err := filepath.Walk(rootPath,
 		func(fullFilePath string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
 			config := &helm.Configuration{
-				Chart:            cmd.Flag(flagDefaultChart).Value.String(),
-				ChartVersion:     cmd.Flag(flagDefaultChartVersion).Value.String(),
-				HelmYaml:         cmd.Flag(flagHelmYamlFilename).Value.String(),
-				ValuesYaml:       cmd.Flag(flagHelmValuesFilename).Value.String(),
-				PostRenderBinary: cmd.Flag(flagPostRenderBinary).Value.String(),
+				Chart:               cmd.Flag(flagDefaultChart).Value.String(),
+				ChartVersion:        cmd.Flag(flagDefaultChartVersion).Value.String(),
+				HelmYaml:            cmd.Flag(flagHelmYamlFilename).Value.String(),
+				ValuesYaml:          cmd.Flag(flagHelmValuesFilename).Value.String(),
+				PostRenderBinary:    cmd.Flag(flagPostRenderBinary).Value.String(),
+				KeyValueAssignments: keyValueAssignmentMap,
 			}
 			chartManifests, err := getManifestsForPath(fullFilePath, config)
 			if err != nil {
@@ -81,4 +99,21 @@ func helmGenerate(cmd *cobra.Command, args []string) (bytes.Buffer, error) {
 	util.WalkDedup(manifests, yamlEncoder(enc))
 
 	return buf, nil
+}
+
+func parseKeyValueAssignments(keyValueAssignments []string) (map[string]string, error) {
+	m := make(map[string]string)
+	for _, keyValue := range keyValueAssignments {
+		s := strings.Split(keyValue, "=")
+		if len(s) != 2 {
+			return nil, fmt.Errorf("key-value assignment string is not of the form <key>=<value>: %s", keyValue)
+		}
+		key := s[0]
+		value := s[1]
+		if key == "" {
+			return nil, errors.New("key-value assignment string cannot have empty key")
+		}
+		m[key] = value
+	}
+	return m, nil
 }

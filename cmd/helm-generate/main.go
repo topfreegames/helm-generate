@@ -29,6 +29,7 @@ var (
 	flagPostRenderBinary    = "post-render-binary"
 	flagHelmYamlFilename    = "helm-yaml"
 	flagHelmValuesFilename  = "values-yaml"
+	flagSetKeyValue         = "set"
 )
 
 // initConfig reads in config file and ENV variables if set.
@@ -60,6 +61,7 @@ func init() {
 	rootCmd.Flags().String(flagHelmYamlFilename, ".helm.yaml", "File to look for helm chart configuration (Defaults to .helm.yaml)")
 	rootCmd.Flags().StringP(flagHelmValuesFilename, "f", "values.yaml", "Filename of the helm values file (Defaults to values.yaml)")
 	rootCmd.Flags().StringP(flagPostRenderBinary, "p", "", "A command to run after rendering the Helm templates")
+	rootCmd.Flags().StringArray(flagSetKeyValue, []string{}, "List of <key>=<value> strings representing a property and its value to be assigned on the top level of the chart values.")
 }
 
 func main() {

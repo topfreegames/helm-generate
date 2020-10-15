@@ -189,6 +189,8 @@ spec:
             command:
             - /bin/sh
             env:
+            - name: CLUSTER
+              value: cluster-name
             - name: ECHO_VAR
               value: busybox
             image: busybox:latest
