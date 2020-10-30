@@ -61,6 +61,7 @@ func TestInstallChartWithArgs(t *testing.T) {
 		mockCmd.Flags().String(flagHelmYamlFilename, ".helm.yaml", "")
 		mockCmd.Flags().StringP(flagHelmValuesFilename, "f", "values.yaml", "")
 		mockCmd.Flags().StringP(flagPostRenderBinary, "p", "", "")
+		mockCmd.Flags().StringArray(flagSetKeyValue, []string{"cluster=cluster-name"}, "")
 
 		b, testError := helmGenerate(mockCmd, []string{test.Sample.(string)})
 		cmdOutput, err := ioutil.ReadAll(&b)
