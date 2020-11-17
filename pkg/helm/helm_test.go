@@ -329,6 +329,7 @@ func TestInstallChart(t *testing.T) {
 }
 
 func TestAddNamespaceMetadata(t *testing.T) {
+	emptyMap := map[string]interface{}{}
 	namespace := "test-namespace"
 	tests := []TestCase{
 		{
@@ -366,10 +367,11 @@ func TestAddNamespaceMetadata(t *testing.T) {
 		},
 		{
 			Name:   "empty manifest",
-			Sample: []map[string]interface{}{},
+			Sample: []map[string]interface{}{emptyMap},
+
 			Expected: ReturnWithError{
-				Value: nil,
-				Error: true,
+				Value: []map[string]interface{}{emptyMap},
+				Error: false,
 			},
 		},
 		{

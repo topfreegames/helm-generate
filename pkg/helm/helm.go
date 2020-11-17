@@ -44,6 +44,10 @@ func addNamespaceMetadata(manifests []map[string]interface{}, namespace string) 
 		return nil, fmt.Errorf("Empty manifest list")
 	}
 	for _, manifest := range manifests {
+		// Some helm chart produce empty manfiests
+		if len(manifest) == 0 {
+			continue
+		}
 		_, err := util.NestedMapLookup(manifest, "metadata")
 		if err == nil {
 			manifest["metadata"].(map[interface{}]interface{})["namespace"] = namespace
