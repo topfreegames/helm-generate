@@ -1,0 +1,45 @@
+name: Publish new Docker image
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  dockerhub-build-push:
+    name: DockerHub Build and Push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Get the current release version 
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag tfgco/helm-generate:latest
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    - name: Push the latest Docker image
+      run: docker push tfgco/helm-generate:latest
+    - name: Tag the release Docker image
+      run: docker tag tfgco/helm-generate:latest tfgco/helm-generate:${{steps.vars.outputs.tag}} 
+    - name: Push the tagged release Docker image
+      run: docker push tfgco/helm-generate:${{steps.vars.outputs.tag}} 
+  quayio-build-push:
+    name: Quay.io Build and Push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Get the current release version 
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag quay.io/tfgco/helm-generate:latest
+    - name: Login to Quay.io Registry
+      run: echo ${{ secrets.QUAYIO_TOKEN }} | docker login -u ${{ secrets.QUAYIO_USERNAME }} --password-stdin quay.io
+    - name: Push the latest Docker image
+      run: docker push quay.io/tfgco/helm-generate:latest
+    - name: Tag the release Docker image
+      run: docker tag quay.io/tfgco/helm-generate:latest quay.io/tfgco/helm-generate:${{steps.vars.outputs.tag}} 
+    - name: Push the tagged release Docker image
+      run: docker push quay.io/tfgco/helm-generate:${{steps.vars.outputs.tag}} 
