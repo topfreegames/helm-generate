@@ -96,12 +96,14 @@ func (h *Configuration) buildHelmClient(name string, namespace string) (*action.
 	actionConfig := new(action.Configuration)
 	//nolint:errcheck
 	actionConfig.Init(settings.RESTClientGetter(), namespace, os.Getenv("HELM_DRIVER"), log.Printf)
+        actionConfig.Capabilities = getCapabilities()
 	client := action.NewInstall(actionConfig)
 	client.ReleaseName = name
 	client.Namespace = namespace
 	client.DryRun = true
 	client.ClientOnly = true
 	client.UseReleaseName = true
+        client.KubeVersion = &actionConfig.Capabilities.KubeVersion
 	if h.PostRenderBinary != "" {
 		pe, err := postrender.NewExec(h.PostRenderBinary)
 		if err != nil {
@@ -162,4 +164,21 @@ func (h *Configuration) InstallChart(vals chartutil.Values) ([]map[string]interf
 		return nil, err
 	}
 	return append(nsManifest, manifest...), nil
+}
+
+func getCapabilities() (*chartutil.Capabilities ){
+        val, present := os.LookupEnv("KUBE_VERSION")
+        if present {
+                kubeVersion, err := chartutil.ParseKubeVersion(val);
+                if err != nil {
+                       log.Println("Error : failed to parse KUBE_VERSION env var -> ", err)
+                } else {
+                       return &chartutil.Capabilities{
+                               KubeVersion: *kubeVersion,
+                               APIVersions: chartutil.DefaultVersionSet,
+                               HelmVersion: chartutil.DefaultCapabilities.HelmVersion,
+                       }
+                }
+        }
+        return chartutil.DefaultCapabilities;
 }

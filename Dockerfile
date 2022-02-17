@@ -1,4 +1,4 @@
-FROM golang:1.14 as build-helm-generate
+FROM golang:1.17 as build-helm-generate
 
 WORKDIR /src
 
