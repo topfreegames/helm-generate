@@ -35,9 +35,13 @@ endif
 MAKEFLAGS += --silent
 
 # Use linker flags to provide version settings to the target
-# # Also build it with as much as possible static links. It may do the build a bit slower
-LDFLAGS=-ldflags "-X=${GITREMOTE}/pkg/constants.Version=$(VERSION) -extldflags '-static'"
-
+# # Also build it with as much as possible static links, except for macos which doesn't contain a static version of lcrt0.o. It may do the build a bit slower
+UNAME_S := $(shell uname -s | tr A-Z a-z)
+ifeq ($(UNAME_S),darwin)
+	LDFLAGS=-ldflags "-X=${GITREMOTE}/pkg/constants.Version=$(VERSION)"
+else
+	LDFLAGS=-ldflags "-X=${GITREMOTE}/pkg/constants.Version=$(VERSION) -extldflags '-static'"
+endif
 ################################################################################
 ## Standard make targets
 ################################################################################
