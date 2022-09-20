@@ -17,6 +17,8 @@ import (
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/postrender"
+        "k8s.io/client-go/discovery"
+        "sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
 // Configurator defines the interface for implementing a Helm Configuration
@@ -179,6 +181,30 @@ func getCapabilities() (*chartutil.Capabilities ){
                                HelmVersion: chartutil.DefaultCapabilities.HelmVersion,
                        }
                 }
+        } else {
+          config, err := config.GetConfig()
+          if err != nil {
+              fmt.Printf("failed to get kubernetes config %v",err)
+              return chartutil.DefaultCapabilities
+          }
+          discoveryClient, err := discovery.NewDiscoveryClientForConfig(config)
+          if err != nil {
+              fmt.Printf(" error in discoveryClient %v",err)
+              return chartutil.DefaultCapabilities
+          }
+          
+          val, err := discoveryClient.ServerVersion()
+          if err != nil{
+              fmt.Println("Error while fetching server version information", err)
+              return chartutil.DefaultCapabilities
+          }
+          fmt.Sprintf("%s",val)
+          kubeVersion, err := chartutil.ParseKubeVersion(fmt.Sprintf("%s",val));
+          return &chartutil.Capabilities{
+                  KubeVersion: *kubeVersion,
+                  APIVersions: chartutil.DefaultVersionSet,
+                  HelmVersion: chartutil.DefaultCapabilities.HelmVersion,
+          }
         }
-        return chartutil.DefaultCapabilities;
+        return chartutil.DefaultCapabilities
 }
