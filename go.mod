@@ -1,6 +1,6 @@
 module github.com/topfreegames/helm-generate
 
-go 1.17
+go 1.19
 
 require (
 	github.com/mitchellh/hashstructure v1.0.0
