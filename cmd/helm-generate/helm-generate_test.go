@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+        "io"
 	"os"
 	"testing"
 
@@ -20,12 +20,12 @@ type TestCase struct {
 func TestInstallChartWithArgs(t *testing.T) {
 	sampleDir := "tests/samples"
 	expectedDir := "tests/expected"
-	samples, err := ioutil.ReadDir(sampleDir)
+	samples, err := os.ReadDir(sampleDir)
 	if err != nil {
 		t.Logf("%v", err)
 		t.Fail()
 	}
-	expected, err := ioutil.ReadDir(expectedDir)
+	expected, err := os.ReadDir(expectedDir)
 	if err != nil {
 		t.Logf("%v", err)
 		t.Fail()
@@ -64,13 +64,13 @@ func TestInstallChartWithArgs(t *testing.T) {
 		mockCmd.Flags().StringArray(flagSetKeyValue, []string{"cluster=cluster-name"}, "")
 
 		b, testError := helmGenerate(mockCmd, []string{test.Sample.(string)})
-		cmdOutput, err := ioutil.ReadAll(&b)
+		cmdOutput, err := io.ReadAll(&b)
 		if err != nil {
 			t.Logf("%v", err)
 			t.Fail()
 		}
 		expectedPath := test.Expected.(string) + "/output.yaml"
-		expectedOutput, err := ioutil.ReadFile(expectedPath)
+		expectedOutput, err := os.ReadFile(expectedPath)
 
 		shouldFail := false
 		if os.IsNotExist(err) {
@@ -120,12 +120,12 @@ func TestInstallChartWithoutArgs(t *testing.T) {
 		mockCmd.Flags().StringP(flagPostRenderBinary, "p", "", "")
 
 		b, testError := helmGenerate(mockCmd, nil)
-		cmdOutput, err := ioutil.ReadAll(&b)
+		cmdOutput, err := io.ReadAll(&b)
 		if err != nil {
 			t.Logf("%v", err)
 			t.Fail()
 		}
-		expectedOutput, err := ioutil.ReadFile(test.Expected.(string) + "/output.yaml")
+		expectedOutput, err := os.ReadFile(test.Expected.(string) + "/output.yaml")
 		if err != nil {
 			t.Logf("%v", err)
 			t.Fail()

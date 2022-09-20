@@ -3,7 +3,6 @@ package helm
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -65,7 +64,7 @@ func (h *Configuration) getConf(file io.Reader) error {
 	if file == nil {
 		return os.ErrNotExist
 	}
-	buffer, err := ioutil.ReadAll(file)
+	buffer, err := io.ReadAll(file)
 	if err != nil {
 		return fmt.Errorf("Error reading IO buffer: %w", err)
 	}
@@ -198,8 +197,10 @@ func getCapabilities() (*chartutil.Capabilities ){
               fmt.Println("Error while fetching server version information", err)
               return chartutil.DefaultCapabilities
           }
-          fmt.Sprintf("%s",val)
-          kubeVersion, err := chartutil.ParseKubeVersion(fmt.Sprintf("%s",val));
+          kubeVersion, err := chartutil.ParseKubeVersion(val.String());
+          if err != nil {
+                 log.Println("Error : failed to parse KUBE_VERSION env var -> ", err)
+          }
           return &chartutil.Capabilities{
                   KubeVersion: *kubeVersion,
                   APIVersions: chartutil.DefaultVersionSet,
